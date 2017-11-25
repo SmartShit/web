@@ -13,9 +13,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
+import { Router, Route, browserHistory, Switch } from 'react-router';
 import FontFaceObserver from 'fontfaceobserver';
 import createHistory from 'history/createBrowserHistory';
 import 'sanitize.css/sanitize.css';
+import Detail from './containers/Detail';
 
 // Import root app
 import App from 'containers/App';
@@ -70,9 +72,12 @@ const render = (messages) => {
   ReactDOM.render(
     <Provider store={store}>
       <LanguageProvider messages={messages}>
-        <ConnectedRouter history={history}>
-          <App />
-        </ConnectedRouter>
+        <Router history={history}>
+          <Switch>
+            <Route exact path="/" component={App} />
+            <Route path="/detail/:id" component={Detail} />
+          </Switch>
+        </Router>
       </LanguageProvider>
     </Provider>,
     MOUNT_NODE
@@ -83,7 +88,7 @@ if (module.hot) {
   // Hot reloadable React components and translation json files
   // modules.hot.accept does not accept dynamic dependencies,
   // have to be constants at compile-time
-  module.hot.accept(['./i18n', 'containers/App'], () => {
+  module.hot.accept([ './i18n', 'containers/App' ], () => {
     ReactDOM.unmountComponentAtNode(MOUNT_NODE);
     render(translationMessages);
   });

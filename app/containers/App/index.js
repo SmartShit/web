@@ -1,47 +1,77 @@
-/**
- *
- * App
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
- */
-
 import React from 'react';
-import { Helmet } from 'react-helmet';
-import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import axios from 'axios';
+import DefaultTemplate from '../DefaultTemplate/index';
+import { Link } from 'react-router-dom';
 
-import HomePage from 'containers/HomePage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
+const fetch = () => {
+  axios.get('https://smartshit-api.herokuapp.com/sumps')
+    .then((res) => {
+      this.setState({
+        sesPools: res.data,
+        loading: false,
+      });
+    });
+}
 
-const AppWrapper = styled.div`
-  max-width: calc(768px + 16px * 2);
-  margin: 0 auto;
-  display: flex;
-  min-height: 100%;
-  padding: 0 16px;
-  flex-direction: column;
-`;
 
-export default function App() {
-  return (
-    <AppWrapper>
-      <Helmet
-        titleTemplate="%s - React.js Boilerplate"
-        defaultTitle="React.js Boilerplate"
-      >
-        <meta name="description" content="A React.js Boilerplate application" />
-      </Helmet>
-      <Header />
-      <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/features" component={FeaturePage} />
-        <Route path="" component={NotFoundPage} />
-      </Switch>
-      <Footer />
-    </AppWrapper>
-  );
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      sesPools: null,
+    };
+
+    this.renderSesPools = this.renderSesPools.bind(this);
+  }
+
+  async componentWillMount() {
+    axios.get('https://smartshit-api.herokuapp.com/sumps')
+      .then((res) => {
+        this.setState({
+          sesPools: res.data,
+          loading: false,
+        });
+      });
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      axios.get('https://smartshit-api.herokuapp.com/sumps')
+        .then((res) => {
+          this.setState({
+            sesPools: res.data,
+            loading: false,
+          });
+        });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  renderSesPools(sesPools) {
+    return sesPools.map((sesPool) => {
+      return (
+        <li key={sesPool.id}>
+          <Link to={`/detail/${sesPool.id}`}>
+            {sesPool.name} - {sesPool.sensor_id}
+            {sesPool.address_city}, {sesPool.address_street}
+            {sesPool.fullness_pct}
+          </Link>
+        </li>
+      );
+    });
+  }
+
+  render() {
+    return this.state.loading ? (<div>LOADING</div>) : (
+      <DefaultTemplate>
+        <ul>
+          {this.renderSesPools(this.state.sesPools)}
+        </ul>
+      </DefaultTemplate>
+    );
+  }
 }
