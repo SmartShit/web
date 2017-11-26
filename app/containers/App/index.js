@@ -1,18 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import DefaultTemplate from '../DefaultTemplate/index';
-import { Link } from 'react-router-dom';
+import { Box, GreyText, Percentage } from './styled';
 
-const fetch = () => {
-  axios.get('https://smartshit-api.herokuapp.com/sumps')
-    .then((res) => {
-      this.setState({
-        sesPools: res.data,
-        loading: false,
-      });
-    });
-}
-
+const poopIcon = require('./poop.png');
 
 export default class App extends React.Component {
   constructor(props) {
@@ -54,13 +45,13 @@ export default class App extends React.Component {
   renderSesPools(sesPools) {
     return sesPools.map((sesPool) => {
       return (
-        <li key={sesPool.id}>
-          <Link to={`/detail/${sesPool.id}`}>
-            {sesPool.name} - {sesPool.sensor_id}
-            {sesPool.address_city}, {sesPool.address_street}
-            {sesPool.fullness_pct}
-          </Link>
-        </li>
+        <Box key={sesPool.id} to={`/detail/${sesPool.id}`}>
+          <h2>{sesPool.name}<br /><GreyText>device id: {sesPool.sensor_id}</GreyText></h2>
+          {sesPool.address_city}{sesPool.address_street && ', ' + sesPool.address_street}
+          <Percentage>
+            <img src={poopIcon} />{sesPool.fullness_pct} %
+          </Percentage>
+        </Box>
       );
     });
   }
@@ -68,9 +59,7 @@ export default class App extends React.Component {
   render() {
     return this.state.loading ? (<div>LOADING</div>) : (
       <DefaultTemplate>
-        <ul>
-          {this.renderSesPools(this.state.sesPools)}
-        </ul>
+        {this.renderSesPools(this.state.sesPools)}
       </DefaultTemplate>
     );
   }

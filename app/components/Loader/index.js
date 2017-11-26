@@ -12,7 +12,9 @@ export default class Loader extends Component {
   state = {
     value: 50,
   };
-  startColor = '#4a2019';
+
+  startColor = '#3eb127';
+
   endColor = '#b30408';
 
   render() {
@@ -44,13 +46,13 @@ export default class Loader extends Component {
       <div>
         <LiquidFillGauge
           style={{ margin: '0 auto' }}
-          width={radius * 2}
-          height={radius * 2}
+          width={this.props.size}
+          height={this.props.size}
           value={this.props.percentage}
           percent="%"
           textSize={1}
           textOffsetX={0}
-          textOffsetY={0}
+          textOffsetY={35}
           textRenderer={(props) => {
             const value = Math.round(props.value);
             const radius = Math.min(props.height / 2, props.width / 2);
