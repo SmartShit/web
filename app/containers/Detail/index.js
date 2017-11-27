@@ -43,23 +43,36 @@ export default class Detailextends extends React.Component {
 
   componentDidMount() {
     let width = window.innerWidth - 110;
-    if (width > 768) {
-      width = 768;
+    if (window.innerWidth > 768) {
+      width = 290;
     }
     this.setState({
       width: width
     });
     window.addEventListener("resize", this.updateDimensions);
+
+    this.interval = setInterval(() => {
+      const id = this.props.match.params.id;
+      axios.get(`https://smartshit-api.herokuapp.com/sumps/${id}`)
+        .then((res) => {
+          this.setState({
+            ...res.data,
+            loading: false,
+          });
+        });
+    }, 1000);
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
+
+    clearInterval(this.interval);
   }
 
   updateDimensions(event) {
     let width = event.currentTarget.innerWidth - 110;
-    if (width > 768) {
-      width = 768;
+    if (window.innerWidth > 768) {
+      width = 290;
     }
     this.setState({
       width: width
@@ -67,44 +80,40 @@ export default class Detailextends extends React.Component {
   }
 
 
-  // componentDidMount() {
-  //   this.interval = setInterval(() => {
-  //     const id = this.props.match.params.id;
-  //     axios.get(`https://smartshit-api.herokuapp.com/sumps/${id}`)
-  //       .then((res) => {
-  //         this.setState({
-  //           ...res.data,
-  //           loading: false,
-  //         });
-  //       });
-  //   }, 1000);
-  // }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
   render() {
     const cesspool = this.state;
+    const number = !this.state.loading && 0.12 * cesspool.fullness_pct;
+    const rounded = Math.round( number * 10 ) / 10;
     return this.state.loading ? (<div>LOADING</div>) : (
 
       <DefaultTemplate>
         <Wrapper>
           <Box>
             <h1>{cesspool.name}</h1>
-            deviceId: {cesspool.sensor_id}
-            systemID: {cesspool.id}
+            <div>
+              deviceId: {cesspool.sensor_id}
+            </div>
+            <div>
+              systemID: {cesspool.id}
+            </div>
           </Box>
           <div style={{ width: "100%", float: "left" }}></div>
           <Box width="48%">
-            {cesspool.address_city}{cesspool.address_street && ', ' + cesspool.address_street}
-            {cesspool.latitude}, {cesspool.longitude}
+            <h2>Umístění</h2>
+            <div>
+              {cesspool.address_city}{cesspool.address_street && ', ' + cesspool.address_street}
+            </div>
+            <div>
+              {cesspool.latitude}, {cesspool.longitude}
+            </div>
             <Map lat={cesspool.latitude} lng={cesspool.longitude}
                  loadingElement={<div style={{ height: `100%` }} />}
                  containerElement={<div style={{ height: `376px` }} />}
                  mapElement={<div style={{ height: `100%` }} />} />
           </Box>
           <Box>
+            <h2>Zaplnění nádrže</h2>
+            <div>{rounded} litrů</div>
             <Loader percentage={cesspool.fullness_pct} size={this.state.width} />
           </Box>
         </Wrapper>

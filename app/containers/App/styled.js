@@ -14,17 +14,25 @@ export const Box = styled(Link)`
     min-width: 296px;
     margin: 8px;
     float: left;
-    width: calc(100% - 16px);
     text-decoration: none;
-    
-    @media (min-width: 768px){
-      width: calc(33% - 16px);
-    }
-    
-    
-    @media (min-width: 1081px){
-      width: calc(25% - 16px);
-    }
+  width: calc(100% - 16px);
+  
+  @media(min-width: 624px) {
+    width: calc(50% - 16px);
+  }
+  
+  @media(min-width: 936px) {
+    width: calc(33.33% - 16px);
+  }
+  
+  @media(min-width: 1248px) {
+    width: calc(25% - 16px);
+  }
+  
+  @media(min-width: 1560px) {
+    width: calc(20% - 16px);
+    max-width: 600px;
+  }
     
     color: #333;
     

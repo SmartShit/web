@@ -18,6 +18,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import createHistory from 'history/createBrowserHistory';
 import 'sanitize.css/sanitize.css';
 import Detail from './containers/Detail';
+import RouteModule from './containers/Route';
 
 // Import root app
 import App from 'containers/App';
@@ -76,6 +77,7 @@ const render = (messages) => {
           <Switch>
             <Route exact path="/" component={App} />
             <Route path="/detail/:id" component={Detail} />
+            <Route path="/route" component={RouteModule} />
           </Switch>
         </Router>
       </LanguageProvider>

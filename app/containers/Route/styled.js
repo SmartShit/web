@@ -16,10 +16,6 @@ export const Box = styled.div`
     @media (min-width: 768px) {
       width: ${(props) => props.width || "auto"}
     }
-    
-    h2 {
-    margin-top: 0;
-    }
 `;
 export const Wrapper = styled.div`
     @media (max-width: 767px) {
